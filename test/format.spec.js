@@ -11,6 +11,10 @@ describe('format', function () {
       expect(format('Hello {who}', { who: 'everyone' }))
         .equal('Hello everyone')
     })
+    it('simple argument array like', function () {
+      expect(format('Hello {0}, who {1} this.', { 0: 'everyone', 1: 'likes' }))
+        .equal('Hello everyone, who likes this.')
+    })
     it('simple argument no value', function () {
       expect(format('Hello {who}', {}))
         .equal('Hello {who}')

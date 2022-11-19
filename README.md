@@ -56,6 +56,9 @@ format('Hello {who}!', {who: 'everyone'})
 
 format('Hello {who}, who {emotion} this!', {who: 'everyone', emotion: 'likes'})
 // Hello everyone, who likes this!
+
+format('Hello {0}, who {1} this!', {0: 'everyone', 1: 'likes'})
+// Hello everyone, who likes this!
 ```
 
 # Formatted Argument
