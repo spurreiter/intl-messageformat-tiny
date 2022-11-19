@@ -19,6 +19,10 @@ describe('format', function () {
       expect(format('Hello {who}', {}))
         .equal('Hello {who}')
     })
+    it('simple argument no content', function () {
+      expect(format('Hello {who}', { who: '' }))
+        .equal('Hello ')
+    })
   })
 
   describe('number', function () {
@@ -138,6 +142,11 @@ describe('format', function () {
     it('plural type 12 items', function () {
       expect(format(elem, { itemCount: 12 }))
         .equal('You have 12 items.')
+    })
+    it('issue 1', function () {
+      const message = '{value, plural, =0 {no Person} =1 {one Person} other {# Persons}}'
+      expect(format(message, { value: 1 }))
+        .equal('one Person')
     })
   })
 

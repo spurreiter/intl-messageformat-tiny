@@ -232,11 +232,11 @@ const formatPart = (ast, values, lng) => {
         const value = Number(values[prop])
         const rule = new Intl.PluralRules(lng).select(value)
 
-        if ((rule === 'other' && opts[0] === '=' && value === Number(opts.slice(1))) ||
+        if ((opts[0] === '=' && value === Number(opts.slice(1))) ||
           (rule === opts && opts[0] !== '=')
         ) {
           matchFound = type
-          const str = formatPart(parts, values, lng)
+          const str = formatPart(parts, values, lng).replace('#', '' + value)
           strs.push(str)
         }
         if (!matchFound && ast[i + 1]?.type !== type) {
@@ -265,7 +265,7 @@ const formatPart = (ast, values, lng) => {
         }
         const value = Number(values[prop])
         const rule = new Intl.PluralRules(lng, { type: 'ordinal' }).select(value)
-        if ((rule === 'other' && opts[0] === '=' && value === Number(opts.slice(1))) ||
+        if ((opts[0] === '=' && value === Number(opts.slice(1))) ||
           (rule === opts && opts[0] !== '=')
         ) {
           matchFound = type
@@ -301,7 +301,7 @@ const formatPart = (ast, values, lng) => {
  * @param {object} values
  * @param {string} [lng='en']
  */
-export function format (message, values, lng = 'en') {
+export function format (message = '', values = {}, lng = 'en') {
   if (!message.includes('{')) {
     return message
   }
