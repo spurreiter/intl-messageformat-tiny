@@ -1,6 +1,6 @@
 {
   "name": "intl-messageformat-tiny",
-  "version": "1.0.0",
+  "version": "1.0.1-0",
   "description": "tiny alternative to intl-messageformat",
   "keywords": [
     "i18n",
