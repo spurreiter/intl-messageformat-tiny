@@ -9,4 +9,4 @@ export function parse(message: string): object[];
  * @param {object} values
  * @param {string} [lng='en']
  */
-export function format(message: string, values: object, lng?: string | undefined): string;
+export function format(message?: string, values?: object, lng?: string | undefined): string;

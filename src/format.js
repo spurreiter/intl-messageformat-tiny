@@ -233,7 +233,7 @@ const formatPart = (ast, values, lng) => {
         const rule = new Intl.PluralRules(lng).select(value)
 
         if ((opts[0] === '=' && value === Number(opts.slice(1))) ||
-          (rule === opts && opts[0] !== '=')
+          (rule === opts && opts[0] !== '=') || opts === 'other'
         ) {
           matchFound = type
           const str = formatPart(parts, values, lng).replace('#', '' + value)
@@ -266,7 +266,7 @@ const formatPart = (ast, values, lng) => {
         const value = Number(values[prop])
         const rule = new Intl.PluralRules(lng, { type: 'ordinal' }).select(value)
         if ((opts[0] === '=' && value === Number(opts.slice(1))) ||
-          (rule === opts && opts[0] !== '=')
+          (rule === opts && opts[0] !== '=') || opts === 'other'
         ) {
           matchFound = type
           const str = formatPart(parts, values, lng).replace('#', '' + value)
