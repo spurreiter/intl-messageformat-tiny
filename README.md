@@ -127,7 +127,7 @@ Not all languages use all plural categories.
 > **Warning**
 > `other` is required and shall be at the last matching position.
 
-> **Info**
+> **Note**
 > You may also want to set the correct locale!
 
 ```js
@@ -153,7 +153,7 @@ in the input data.
 > **Warning**
 > `other` is required and shall be at the last matching position.
 
-> **Info**
+> **Note**
 > You may also want to set the correct locale!
 
 ```js
@@ -177,7 +177,7 @@ ordinal plural category.
 > **Warning**
 > `other` is required and shall be at the last matching position.
 
-> **Info**
+> **Note**
 > You may also want to set the correct locale!
 
 ```js
@@ -212,7 +212,7 @@ argument:
 - `full` is used to format dates with the most detail
 - `[option]/value` all options from [Intl.DateTimeFormat()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat)
 
-> **Info**
+> **Note**
 > Don't forget to set the locale!
 
 ```js
@@ -250,7 +250,7 @@ This type is used to format times in a way that is sensitive to the locale. It u
 - `full` is the same as long
 - `[option]/value` all options from [Intl.DateTimeFormat()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat)
 
-> **Info**
+> **Note**
 > Don't forget to set the locale!
 
 ```js
