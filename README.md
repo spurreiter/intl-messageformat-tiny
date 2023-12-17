@@ -124,10 +124,10 @@ Not all languages use all plural categories.
 - `=value` : This is used to match a specific value regardless of the plural
   categories of the current locale.
 
-> **Warning**
+> [!warning]
 > `other` is required and shall be at the last matching position.
 
-> **Note**
+> [!note]
 > You may also want to set the correct locale!
 
 ```js
@@ -150,10 +150,10 @@ The `{key, select, matches}` is used to choose output by matching a value to one
 of many choices. (It is similar to the switch statement) The `key` is looked up
 in the input data. 
 
-> **Warning**
+> [!warning]
 > `other` is required and shall be at the last matching position.
 
-> **Note**
+> [!note]
 > You may also want to set the correct locale!
 
 ```js
@@ -174,10 +174,10 @@ ordinal pluralization rules (1st, 2nd, 3rd, etc.) of the required locale. It is
 very similar to the `{plural}` format above except that the value is mapped to an
 ordinal plural category.
 
-> **Warning**
+> [!warning]
 > `other` is required and shall be at the last matching position.
 
-> **Note**
+> [!note]
 > You may also want to set the correct locale!
 
 ```js
@@ -212,7 +212,7 @@ argument:
 - `full` is used to format dates with the most detail
 - `[option]/value` all options from [Intl.DateTimeFormat()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat)
 
-> **Note**
+> [!note]
 > Don't forget to set the locale!
 
 ```js
@@ -250,7 +250,7 @@ This type is used to format times in a way that is sensitive to the locale. It u
 - `full` is the same as long
 - `[option]/value` all options from [Intl.DateTimeFormat()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Intl/DateTimeFormat/DateTimeFormat)
 
-> **Note**
+> [!note]
 > Don't forget to set the locale!
 
 ```js
