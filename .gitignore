@@ -26,3 +26,4 @@ dist-ssr
 # Project
 coverage/
 *.tgz
+pnpm-lock.yaml

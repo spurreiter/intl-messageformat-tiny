@@ -1,9 +1,14 @@
 import { expect } from 'chai'
-import { format } from '../src/format.js'
+import { format, parse } from '../src/format.js'
 
 // import { IntlMessageFormat } from 'intl-messageformat'
 // const format = (elem, values, locale = 'en-UK') => new IntlMessageFormat(elem, locale).format(values)
 // const expect = val => ({ equal: () => {} })
+
+const nodeVersionMajor = process.version.slice(1).split('.')[0]
+
+// explicitly set timezone for tests
+process.env.TZ = 'Europe/Paris'
 
 describe('format', function () {
   describe('simple', function () {
@@ -64,7 +69,10 @@ describe('format', function () {
     })
     it('date type full', function () {
       expect(format('Sale begins {start, date, full}', { start }, 'en-UK'))
-        .equal('Sale begins Sunday, 2 January 2022')
+        .equal(nodeVersionMajor === '21'
+          ? 'Sale begins Sunday 2 January 2022'
+          : 'Sale begins Sunday, 2 January 2022'
+        )
     })
     it('date type full en', function () {
       expect(format('Sale begins {start, date, full}', { start }))
@@ -102,6 +110,28 @@ describe('format', function () {
 
   describe('select', function () {
     const elem = '{gender, select, male {He} female {She} other {They}} will respond shortly.'
+
+    it('shall parse ast', function () {
+      const ast = parse(elem)
+      expect(ast).deep.equal([
+        {
+          level: 1,
+          type: 'select',
+          prop: 'gender',
+          options: {
+            female: [{ str: 'She', level: 2 }],
+            male: [{ str: 'He', level: 2 }],
+            other: [{ str: 'They', level: 2 }]
+          },
+          parts: [{ str: 'They', level: 2 }]
+        },
+        {
+          level: 0,
+          str: ' will respond shortly.'
+        }
+      ])
+    })
+
     it('select type', function () {
       expect(format(elem, { gender: 'female' }))
         .equal('She will respond shortly.')
@@ -120,6 +150,29 @@ describe('format', function () {
     })
     it('select type nested', function () {
       const elem = '{taxableArea, select, yes {An additional {taxRate, number, style/percent} tax will be collected.} other {No taxes apply.} }'
+
+      expect(parse(elem)).deep.equal([
+        {
+          options: {
+            yes: [
+              { level: 2, str: 'An additional ' },
+              {
+                level: 3,
+                prop: 'taxRate',
+                type: 'number',
+                options: { style: 'percent' },
+                parts: undefined
+              },
+              { level: 2, str: ' tax will be collected.' }
+            ],
+            other: [{ level: 2, str: 'No taxes apply.' }]
+          },
+          level: 1,
+          parts: [{ level: 2, str: 'No taxes apply.' }],
+          prop: 'taxableArea',
+          type: 'select'
+        }
+      ])
 
       expect(format(elem, { taxableArea: 'yes', taxRate: 0.2 }))
         .equal('An additional 20% tax will be collected.')
@@ -147,6 +200,73 @@ describe('format', function () {
       const message = '{value, plural, =0 {no Person} =1 {one Person} other {# Persons}}'
       expect(format(message, { value: 1 }))
         .equal('one Person')
+    })
+  })
+
+  describe('select with plural', function () {
+    const elem = `{genderOfHost, select, female {
+      {numGuests, plural, offset:1
+        =0 {{host} does not give a party.}
+        =1 {{host} invites {guest} to her party.}
+        =2 {{host} invites {guest} and one other person to her party.}
+        other {{host} invites {guest} and # other people to her party.}
+      }
+    } male {
+      {numGuests, plural, offset:1
+        =0 {{host} does not give a party.}
+        =1 {{host} invites {guest} to his party.}
+        =2 {{host} invites {guest} and one other person to his party.}
+        other {{host} invites {guest} and # other people to his party.}
+      }
+    } other {
+      {numGuests, plural, offset:1
+        =0 {{host} does not give a party.}
+        =1 {{host} invites {guest} to their party.}
+        =2 {{host} invites {guest} and one other person to their party.}
+        other {{host} invites {guest} and # other people to their party.}
+      }
+    }}`
+      .replace(/\s+/g, ' ')
+      .replace(/{\s+{/g, '{{')
+      .replace(/{\s+{/g, '{{')
+      .replace(/}\s+}/g, '}}')
+      .replace(/}\s+}/g, '}}')
+    it('female, no guests', function () {
+      expect(
+        format(elem, { genderOfHost: 'female', host: 'Alice', numGuests: 0 })
+      ).equal('Alice does not give a party.')
+    })
+    it('female, one guest', function () {
+      expect(
+        format(elem, {
+          genderOfHost: 'female',
+          host: 'Alice',
+          guest: 'Bob',
+          numGuests: 1
+        })
+      ).equal('Alice invites Bob to her party.')
+    })
+
+    it('female, more than one guest', function () {
+      expect(
+        format(elem, {
+          genderOfHost: 'female',
+          host: 'Alice',
+          guest: 'Bob',
+          numGuests: 3
+        })
+      ).equal('Alice invites Bob and 2 other people to her party.')
+    })
+
+    it('male', function () {
+      expect(
+        format(elem, {
+          genderOfHost: 'male',
+          numGuests: 2,
+          host: 'Bob',
+          guest: 'Alice'
+        })
+      ).equal('Bob invites Alice and one other person to his party.')
     })
   })
 

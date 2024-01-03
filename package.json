@@ -1,6 +1,6 @@
 {
   "name": "intl-messageformat-tiny",
-  "version": "1.0.3",
+  "version": "1.1.0-0",
   "description": "tiny alternative to intl-messageformat",
   "keywords": [
     "i18n",
@@ -48,22 +48,22 @@
     "types": "rimraf types; tsc --emitDeclarationOnly true --noEmitOnError"
   },
   "devDependencies": {
-    "@babel/core": "^7.22.20",
-    "@rollup/plugin-babel": "^6.0.3",
-    "@rollup/plugin-terser": "^0.4.3",
+    "@babel/core": "^7.23.3",
+    "@rollup/plugin-babel": "^6.0.4",
+    "@rollup/plugin-terser": "^0.4.4",
     "c8": "^8.0.1",
-    "chai": "^4.3.8",
-    "eslint": "^8.50.0",
+    "chai": "^4.3.10",
+    "eslint": "^8.54.0",
     "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.28.1",
-    "eslint-plugin-n": "^16.1.0",
+    "eslint-plugin-import": "^2.29.0",
+    "eslint-plugin-n": "^16.3.1",
     "eslint-plugin-promise": "^6.1.1",
     "eslint-plugin-react": "^7.33.2",
-    "intl-messageformat": "^10.5.3",
+    "intl-messageformat": "^10.5.8",
     "mocha": "^10.2.0",
     "npm-run-all": "^4.1.5",
-    "rimraf": "^5.0.1",
-    "rollup": "^3.29.3",
-    "typescript": "^5.2.2"
+    "rimraf": "^5.0.5",
+    "rollup": "^4.5.1",
+    "typescript": "^5.3.2"
   }
 }
