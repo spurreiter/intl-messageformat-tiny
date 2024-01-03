@@ -39,12 +39,29 @@ Format is a function with 2-3 arguments in the form of
 
 The message syntax follows [icu-syntax][] with exceptions.
 
+Offers a cached version to increase performance.
+
+# Cached format
+
+```js
+import { cached } from 'intl-messageformat-tiny'
+
+const format = cached()
+
+// 1st parses format
+format('Hello {who}!', {who: 'everyone'})
+// 2nd use parsed format from cache
+format('Hello {who}!', {who: 'world'})
+```
+
 # Simple Argument
 
 You can use a `{key}` argument for placing a value into the message. The key is
 looked up in the input data, and the string is interpolated with its value.
 
 ```js
+import { format } from 'intl-messageformat-tiny'
+
 format('Hello!', {})
 // Hello!
 
@@ -132,7 +149,11 @@ Not all languages use all plural categories.
 
 ```js
 const message = 
-  'You have {itemCount, plural, =0 {no items} one {one item} other {{itemCount} items}}.
+  'You have {itemCount, plural, ' +
+  '=0 {no items} ' +
+  'one {one item} ' +
+  'other {{itemCount} items}' +
+  '}.
 
 format(message, {itemCount: 0}, 'en')
 // You have no items.
@@ -143,6 +164,21 @@ format(message, {itemCount: 1}, 'en')
 format(message, {itemCount: 12}, 'en')
 // You have 12 items.
 ```
+
+with offset (needs `#`):
+
+```js
+const message = 
+  'You have {itemCount, plural, offset:2' +
+  '=0 {no items} ' +
+  'one {one item} ' +
+  'other {# items}' +
+  '}.
+
+format(message, {itemCount: 12}, 'en')
+// You have 10 items.
+```
+
 
 ## type select
 
@@ -277,7 +313,10 @@ format('Coupon expires at {expires, time, full}', { expires }, 'en-UK')
 The formatted types `plural` and `select` can be nested with other types.
 
 ```js
-const message = '{taxableArea, select, yes {An additional {taxRate, number, percent} tax will be collected.} other {No taxes apply.} }'
+const message = '{taxableArea, select, ' +
+  'yes {An additional {taxRate, number, percent} tax will be collected.} ' +
+  'other {No taxes apply.} ' +
+  '}'
 
 format(message, { taxableArea: 'yes', taxRate: 0.2 })
 // An additional 20% tax will be collected.
