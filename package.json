@@ -1,6 +1,6 @@
 {
   "name": "intl-messageformat-tiny",
-  "version": "1.0.4",
+  "version": "1.1.0-0",
   "description": "tiny alternative to intl-messageformat",
   "keywords": [
     "i18n",
@@ -39,9 +39,9 @@
     "types"
   ],
   "scripts": {
-    "all": "npm-run-all lint build coverage types",
+    "all": "npm-run-all lint build c8 types",
     "build": "rollup -c",
-    "coverage": "c8 npm t",
+    "c8": "c8 -r text -r html -r lcov npm t",
     "changelog": "conv-changelog",
     "lint": "eslint --fix --ext .js,.jsx .",
     "test": "mocha",

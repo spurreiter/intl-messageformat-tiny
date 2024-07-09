@@ -1,11 +1,17 @@
 import { expect } from 'chai'
-import { format } from '../src/format.js'
+import { cached, format, parse } from '../src/format.js'
 
 // import { IntlMessageFormat } from 'intl-messageformat'
 // const format = (elem, values, locale = 'en-UK') => new IntlMessageFormat(elem, locale).format(values)
 // const expect = val => ({ equal: () => {} })
 
 describe('format', function () {
+  describe('none', function () {
+    it('no argument', function () {
+      expect(format('Hello')).equal('Hello')
+    })
+  })
+
   describe('simple', function () {
     it('simple argument', function () {
       expect(format('Hello {who}', { who: 'everyone' }))
@@ -102,6 +108,39 @@ describe('format', function () {
 
   describe('select', function () {
     const elem = '{gender, select, male {He} female {She} other {They}} will respond shortly.'
+    it('shall parse ast', function () {
+      const ast = parse(elem)
+      expect(ast).deep.equal([
+        {
+          prop: 'gender',
+          type: 'select',
+          options: {
+            male: [{ str: 'He', level: 2 }],
+            female: [{ str: 'She', level: 2 }],
+            other: [{ str: 'They', level: 2 }]
+          },
+          level: 1,
+          parts: [{ str: 'They', level: 2 }]
+        },
+        { str: ' will respond shortly.', level: 0 }
+      ])
+    })
+    it('throws if select opts are missing', function () {
+      expect(function () {
+        format('You have {gender, select}', { gender: 'male' })
+      })
+        .throws(TypeError)
+        .with.property('message', 'type "select" needs a matcher')
+    })
+    it('throws if select other match is missing', function () {
+      expect(() => format(
+        '{gender, select, male {He} female {She}} will respond shortly.',
+        { gender: 'other' }
+      ))
+        .throws(TypeError)
+        .with.property('message', 'type "select" needs an "other" match')
+    })
+
     it('select type', function () {
       expect(format(elem, { gender: 'female' }))
         .equal('She will respond shortly.')
@@ -121,6 +160,30 @@ describe('format', function () {
     it('select type nested', function () {
       const elem = '{taxableArea, select, yes {An additional {taxRate, number, style/percent} tax will be collected.} other {No taxes apply.} }'
 
+      const ast = parse(elem)
+      expect(ast).deep.equal([
+        {
+          prop: 'taxableArea',
+          type: 'select',
+          options: {
+            yes: [
+              { str: 'An additional ', level: 2 },
+              {
+                prop: 'taxRate',
+                parts: undefined,
+                type: 'number',
+                options: { style: 'percent' },
+                level: 3
+              },
+              { str: ' tax will be collected.', level: 2 }
+            ],
+            other: [{ str: 'No taxes apply.', level: 2 }]
+          },
+          level: 1,
+          parts: [{ str: 'No taxes apply.', level: 2 }]
+        }
+      ])
+
       expect(format(elem, { taxableArea: 'yes', taxRate: 0.2 }))
         .equal('An additional 20% tax will be collected.')
 
@@ -131,6 +194,58 @@ describe('format', function () {
 
   describe('plural', function () {
     const elem = 'You have {itemCount, plural, =0 {no items} one {one item} other {{itemCount} items}}.'
+    it('parses ast', function () {
+      const ast = parse(elem)
+      expect(ast).deep.equal([
+        { str: 'You have ', level: 0 },
+        {
+          prop: 'itemCount',
+          type: 'plural',
+          options: {
+            '=0': [{ str: 'no items', level: 2 }],
+            one: [{ str: 'one item', level: 2 }],
+            other: [
+              {
+                prop: 'itemCount',
+                options: { undefined: [] },
+                level: 3,
+                parts: [],
+                type: undefined
+              },
+              { str: ' items', level: 2 }
+            ]
+          },
+          level: 1,
+          parts: [
+            {
+              prop: 'itemCount',
+              options: { undefined: [] },
+              level: 3,
+              parts: [],
+              type: undefined
+            },
+            { str: ' items', level: 2 }
+          ]
+        },
+        { str: '.', level: 0 }
+      ])
+    })
+    it('throws if plural opts are missing', function () {
+      expect(function () {
+        format('You have {itemCount, plural}', { itemCount: 10 })
+      })
+        .throws(TypeError)
+        .with.property('message', 'type "plural" needs a matcher')
+    })
+    it('throws if plural other match is missing', function () {
+      expect(function () {
+        format('You have {itemCount, plural, =0 {no items}}', {
+          itemCount: 10
+        })
+      })
+        .throws(TypeError)
+        .with.property('message', 'type "plural" needs an "other" match')
+    })
     it('plural type', function () {
       expect(format(elem, { itemCount: 0 }))
         .equal('You have no items.')
@@ -155,8 +270,98 @@ describe('format', function () {
     })
   })
 
+  describe('select with plural and offset', function () {
+    const elem = `{genderOfHost, select, female {
+      {numGuests, plural, offset:1
+        =0 {{host} does not give a party.}
+        =1 {{host} invites {guest} to her party.}
+        =2 {{host} invites {guest} and one other person to her party.}
+        other {{host} invites {guest} and # other people to her party.}
+      }
+    } male {
+      {numGuests, plural, offset:1
+        =0 {{host} does not give a party.}
+        =1 {{host} invites {guest} to his party.}
+        =2 {{host} invites {guest} and one other person to his party.}
+        other {{host} invites {guest} and # other people to his party.}
+      }
+    } other {
+      {numGuests, plural, offset:1
+        =0 {{host} does not give a party.}
+        =1 {{host} invites {guest} to their party.}
+        =2 {{host} invites {guest} and one other person to their party.}
+        other {{host} invites {guest} and # other people to their party.}
+      }
+    }}`
+      .replace(/\s+/g, ' ')
+      .replace(/{\s+{/g, '{{')
+      .replace(/{\s+{/g, '{{')
+      .replace(/}\s+}/g, '}}')
+      .replace(/}\s+}/g, '}}')
+    it('female, no guests', function () {
+      expect(
+        format(elem, { genderOfHost: 'female', host: 'Alice', numGuests: 0 })
+      ).equal('Alice does not give a party.')
+    })
+    it('female, one guest', function () {
+      expect(
+        format(elem, {
+          genderOfHost: 'female',
+          host: 'Alice',
+          guest: 'Bob',
+          numGuests: 1
+        })
+      ).equal('Alice invites Bob to her party.')
+    })
+    it('female, more than one guest', function () {
+      expect(
+        format(elem, {
+          genderOfHost: 'female',
+          host: 'Alice',
+          guest: 'Bob',
+          numGuests: 3
+        })
+      ).equal('Alice invites Bob and 2 other people to her party.')
+    })
+    it('male', function () {
+      expect(
+        format(elem, {
+          genderOfHost: 'male',
+          numGuests: 2,
+          host: 'Bob',
+          guest: 'Alice'
+        })
+      ).equal('Bob invites Alice and one other person to his party.')
+    })
+    it('with # and offset', function () {
+      const msg = 'You have {itemCount, plural, offset:2 ' +
+        '=0 {no items} ' +
+        'one {one item} ' +
+        'other {# items with offset=2}' +
+        '}.'
+      expect(format(msg, { itemCount: 15 })).equal('You have 13 items with offset=2.')
+    })
+  })
+
   describe('selectordinal', function () {
     const elem = "It's my cat's {year, selectordinal,  one {#st}  two {#nd}  few {#rd}  other {#th}} birthday!"
+    it('throws if selectordinal opts are missing', function () {
+      expect(function () {
+        format("It's my cat's {year, selectordinal", { year: 1 })
+      })
+        .throws(TypeError)
+        .with.property('message', 'type "selectordinal" needs a matcher')
+    })
+    it('throws if selectordinal other match is missing', function () {
+      expect(function () {
+        format(
+          "It's my cat's {year, selectordinal, one {#st} two {#nd} few {#rd}} birthday!",
+          { year: 20 }
+        )
+      })
+        .throws(TypeError)
+        .with.property('message', 'type "selectordinal" needs an "other" match')
+    })
     it('selectordinal type 1st', function () {
       expect(format(elem, { year: 1 }))
         .equal("It's my cat's 1st birthday!")
@@ -172,6 +377,19 @@ describe('format', function () {
     it('selectordinal type 7th', function () {
       expect(format(elem, { year: 7 }))
         .equal("It's my cat's 7th birthday!")
+    })
+  })
+
+  describe('cached', function () {
+    it('use cache', function () {
+      const format = cached()
+      expect(format('Hello world!')).equal('Hello world!')
+      expect(
+        format('Hello {0}, who {1} this.', { 0: 'everyone', 1: 'likes' })
+      ).equal('Hello everyone, who likes this.')
+      expect(
+        format('Hello {0}, who {1} this.', { 0: 'there', 1: 'loves' })
+      ).equal('Hello there, who loves this.')
     })
   })
 })
