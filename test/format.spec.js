@@ -64,7 +64,7 @@ describe('format', function () {
     })
     it('date type full', function () {
       expect(format('Sale begins {start, date, full}', { start }, 'en-UK'))
-        .equal('Sale begins Sunday, 2 January 2022')
+        .equal('Sale begins Sunday 2 January 2022')
     })
     it('date type full en', function () {
       expect(format('Sale begins {start, date, full}', { start }))
