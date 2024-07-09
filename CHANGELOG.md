@@ -1,3 +1,8 @@
+# 1.1.0 (2024-07-09)
+
+- feat: allow offset in purals (#a025f5d)
+- test: increase coverage (#d58b2f7)
+
 # 1.0.4 (2024-07-09)
 
 - chore: bump dependencies (#92d6eea)
