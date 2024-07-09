@@ -169,7 +169,7 @@ export function parse (message) {
         level -= 1
         sub = even(level)
         part = ''
-        delete cache[level + 1];
+        delete cache[level + 1]
         break
       }
       default: {
