@@ -148,6 +148,11 @@ describe('format', function () {
       expect(format(message, { value: 1 }))
         .equal('one Person')
     })
+    it('complex 1', function () {
+      const message = 'You have {count, plural, one {# unread message} other {# unread messages}}, {firstName}'
+      expect(format(message, { count: 10, firstName: 'Jane' }))
+        .equal('You have 10 unread messages, Jane')
+    })
   })
 
   describe('selectordinal', function () {
