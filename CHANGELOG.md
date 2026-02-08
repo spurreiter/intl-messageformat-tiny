@@ -1,3 +1,7 @@
+# 1.2.0 (2026-02-08)
+
+- feat: update eslint (#8399422)
+
 # 1.1.0 (2024-07-09)
 
 - feat: allow offset in purals (#a025f5d)
