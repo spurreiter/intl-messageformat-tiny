@@ -10,7 +10,7 @@ export function parse(message: string): object[];
  * @param {string} [lng='en']
  * @returns {string}
  */
-export function format(message?: string, values?: object, lng?: string | undefined): string;
+export function format(message?: string, values?: object, lng?: string): string;
 /**
  * format with caching
  * @returns {(message: string, values?: object, lng?: string) => string}

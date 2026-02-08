@@ -175,7 +175,7 @@ const block = ({
  * @param {string} message
  * @returns {object[]} parsed ast
  */
-export function parse (message) {
+export function parse(message) {
   let part = ''
   let level = 0
   const parts = []
@@ -328,7 +328,7 @@ const formatPart = (ast, values, lng) => {
  * @param {string} [lng='en']
  * @returns {string}
  */
-export function format (message = '', values = {}, lng = 'en') {
+export function format(message = '', values = {}, lng = 'en') {
   if (!message.includes('{')) {
     return message
   }
@@ -341,10 +341,10 @@ export function format (message = '', values = {}, lng = 'en') {
  * format with caching
  * @returns {(message: string, values?: object, lng?: string) => string}
  */
-export function cached () {
+export function cached() {
   const cache = new Map()
 
-  function format (message = '', values = {}, lng = 'en') {
+  function format(message = '', values = {}, lng = 'en') {
     if (!message.includes('{')) {
       return message
     }

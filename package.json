@@ -1,6 +1,6 @@
 {
   "name": "intl-messageformat-tiny",
-  "version": "1.1.0",
+  "version": "1.2.0-0",
   "description": "tiny alternative to intl-messageformat",
   "keywords": [
     "i18n",
@@ -27,7 +27,8 @@
   "exports": {
     ".": {
       "require": "./lib/format.cjs",
-      "import": "./src/format.js"
+      "types": "./types/index.d.ts",
+      "default": "./src/format.js"
     },
     "./package.json": "./package.json"
   },
@@ -43,27 +44,25 @@
     "build": "rollup -c",
     "c8": "c8 -r text -r html -r lcov npm t",
     "changelog": "conv-changelog",
-    "lint": "eslint --fix --ext .js,.jsx .",
+    "lint": "eslint --fix",
     "test": "mocha",
-    "types": "rimraf types; tsc --emitDeclarationOnly true --noEmitOnError"
+    "types": "rimraf types; tsc"
   },
   "devDependencies": {
-    "@babel/core": "^7.24.7",
-    "@rollup/plugin-babel": "^6.0.4",
+    "@babel/core": "^7.29.0",
+    "@rollup/plugin-babel": "^6.1.0",
     "@rollup/plugin-terser": "^0.4.4",
-    "c8": "^10.1.2",
-    "chai": "^5.1.1",
-    "eslint": "^8.57.0",
-    "eslint-config-standard": "^17.1.0",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-n": "^16.6.2",
-    "eslint-plugin-promise": "^6.4.0",
-    "eslint-plugin-react": "^7.34.3",
-    "intl-messageformat": "^10.5.14",
-    "mocha": "^10.6.0",
+    "c8": "^10.1.3",
+    "chai": "^6.2.2",
+    "eslint": "^9.39.2",
+    "eslint-config-prettier": "^9.1.2",
+    "eslint-plugin-prettier": "^5.5.5",
+    "globals": "^17.3.0",
+    "intl-messageformat": "^11.1.2",
+    "mocha": "^11.7.5",
     "npm-run-all": "^4.1.5",
-    "rimraf": "^6.0.0",
-    "rollup": "^3.29.4",
-    "typescript": "^5.5.3"
+    "rimraf": "^6.1.2",
+    "rollup": "^4.57.1",
+    "typescript": "^5.9.3"
   }
 }

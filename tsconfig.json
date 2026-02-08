@@ -1,17 +1,20 @@
 {
   "compilerOptions": {
     "allowJs": true,
+    "allowSyntheticDefaultImports": true,
     "checkJs": true,
     "declaration": true,
     "declarationDir": "types",
-    "moduleResolution": "node",
+    "emitDeclarationOnly": true,
+    "noEmitOnError": false,
     "noImplicitAny": false,
+    "skipLibCheck": true,
     "strict": true,
-    "module": "es2022",
-    "target": "es2022"
+    "module": "esnext",
+    "target": "esnext"
   },
   "include": [
-    "src/*.js"
+    "src",
   ],
   "exclude": [
     "node_modules",
